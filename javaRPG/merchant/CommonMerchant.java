@@ -1,11 +1,11 @@
-package rpg.merchant;
+package javaRPG.merchant;
 
-import rpg.base.AllyUnit;
-import rpg.item.Sword;
-import rpg.item.Staff;
-import rpg.interfaces.Sellable;
-import rpg.interfaces.IEquipSword;
-import rpg.interfaces.IEquipStaff;
+import javaRPG.base.AllyUnit;
+import javaRPG.item.Sword;
+import javaRPG.item.Staff;
+import javaRPG.interfacess.Sellable;
+import javaRPG.interfacess.IEquipSword;
+import javaRPG.interfacess.IEquipStaff;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

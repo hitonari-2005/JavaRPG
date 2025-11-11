@@ -1,6 +1,6 @@
-package rpg.item;
+package javaRPG.item;
 
-import rpg.interfaces.Sellable;
+import javaRPG.interfacess.Sellable;
 
 /**
  * 杖クラス

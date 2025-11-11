@@ -1,4 +1,4 @@
-package rpg.item;
+package javaRPG.item;
 
 /**
  * 装備品や道具の基底クラス
