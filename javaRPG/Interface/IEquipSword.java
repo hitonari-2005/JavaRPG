@@ -1,22 +1,25 @@
 package javaRPG.Interface;
 
+import javaRPG.BattleUnit.BattleUnit;
+import javaRPG.item.Sword;
+
 /**
  * IEquipSword interface
- * Ken wo soubi dekiru character ga jissou suru interface
- * Hero ya MagicSwordsman ga jissou suru
+ * 剣を装備できるキャラクターが実装するインターフェース
+ * Hero や MagicSwordsman が実装する
  */
 public interface IEquipSword {
 
     /**
-     * Ken wo soubi suru method
-     * Item package no Sword class ga kansei shitara shiyou suru
+     * 剣を装備するメソッド
+     * @param sword 装備する剣
      */
-    void equipSword();
+    void equipSword(Sword sword);
 
     /**
-     * Ken niyoru kougeki method
-     * @param target Kougeki taishou
+     * 剣による攻撃メソッド
+     * @param target 攻撃対象
      */
-    void swordAttack(Object target);
+    void swordAttack(BattleUnit target);
 
 }

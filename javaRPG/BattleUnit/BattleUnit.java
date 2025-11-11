@@ -15,6 +15,7 @@ public abstract class BattleUnit extends Character implements Battlable {
     private int hp;         // 現在のHP（ヒットポイント）
     private int maxHp;      // 最大HP
     private int speed;      // 素早さ（行動順を決定）
+    private boolean isDefending;  // 防御中フラグ
 
     // コンストラクタ（全パラメータ指定）
     public BattleUnit(String name, int id, String type, int power, int hp, int speed) {
@@ -24,6 +25,7 @@ public abstract class BattleUnit extends Character implements Battlable {
         this.hp = hp;
         this.maxHp = hp;  // 初期HPを最大HPとして設定
         this.speed = speed;
+        this.isDefending = false;
     }
 
     // デフォルトコンストラクタ
@@ -34,6 +36,7 @@ public abstract class BattleUnit extends Character implements Battlable {
         this.hp = 50;
         this.maxHp = 50;
         this.speed = 5;
+        this.isDefending = false;
     }
 
     // 攻撃メソッド - 対象にダメージを与える
@@ -55,6 +58,14 @@ public abstract class BattleUnit extends Character implements Battlable {
     // ダメージを受けるメソッド
     // Battlableインターフェースの実装
     public void takeDamage(int damage) {
+        // 防御中の場合、ダメージを半減
+        if (isDefending) {
+            damage = damage / 2;
+            System.out.println(getName() + "は防御している！");
+            System.out.println("ダメージが半減した！");
+            isDefending = false;  // 防御解除
+        }
+
         this.hp -= damage;
         System.out.println(getName() + "は" + damage + "のダメージを受けた！");
 
@@ -84,6 +95,23 @@ public abstract class BattleUnit extends Character implements Battlable {
     // Battlableインターフェースの実装
     public boolean isAlive() {
         return this.hp > 0;
+    }
+
+    // 防御メソッド
+    public void defend() {
+        this.isDefending = true;
+        System.out.println(getName() + "は防御態勢を取った！");
+        System.out.println("次に受けるダメージが半減します！");
+    }
+
+    // 防御状態を解除（ターン開始時に使用）
+    public void clearDefense() {
+        this.isDefending = false;
+    }
+
+    // 防御中かどうかを取得
+    public boolean isDefending() {
+        return isDefending;
     }
 
     // ステータス表示メソッド

@@ -10,6 +10,7 @@ public class AllyUnit extends BattleUnit {
     // フィールド（属性）- 味方固有のステータス
     private int currentXp;    // 現在の経験値
     private int remainingXp;  // レベルアップまでの残り経験値
+    private int money;        // 所持金
 
     // コンストラクタ（全パラメータ指定）
     public AllyUnit(String name, int id, String type, int power, int hp, int speed) {
@@ -17,6 +18,7 @@ public class AllyUnit extends BattleUnit {
         super(name, id, type, power, hp, speed);
         this.currentXp = 0;        // 初期経験値は0
         this.remainingXp = 100;    // レベルアップまで100経験値必要
+        this.money = 100;          // 初期所持金は100ゴールド
     }
 
     // デフォルトコンストラクタ
@@ -24,6 +26,7 @@ public class AllyUnit extends BattleUnit {
         super();
         this.currentXp = 0;
         this.remainingXp = 100;
+        this.money = 100;
     }
 
     // 経験値を獲得するメソッド
@@ -39,9 +42,10 @@ public class AllyUnit extends BattleUnit {
     }
 
     // お金を獲得するメソッド
-    public void winGetExp(int exp, int money) {
-        winGetExp(exp);
+    public void winGetMoney(int money) {
+        this.money += money;
         System.out.println(getName() + "は" + money + "ゴールドを獲得した！");
+        System.out.println("所持金: " + this.money + "G");
     }
 
     // レベルアップ処理
@@ -83,11 +87,31 @@ public class AllyUnit extends BattleUnit {
         return remainingXp;
     }
 
+    // 所持金を取得
+    public int getMoney() {
+        return money;
+    }
+
+    // お金を使用する
+    public boolean spendMoney(int amount) {
+        if (this.money >= amount) {
+            this.money -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    // お金を追加する
+    public void addMoney(int amount) {
+        this.money += amount;
+    }
+
     // ステータス表示メソッド（オーバーライド）
     @Override
     public void displayStatus() {
         super.displayStatus();
         System.out.println("経験値: " + currentXp + " (次のレベルまで: " + remainingXp + ")");
+        System.out.println("所持金: " + money + "G");
         System.out.println("====================");
     }
 
