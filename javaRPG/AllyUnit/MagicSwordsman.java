@@ -6,6 +6,9 @@ import javaRPG.Interface.IEquipStaff;
 import javaRPG.Interface.IMagicUser;
 import javaRPG.item.Sword;
 import javaRPG.item.Staff;
+import javaRPG.magic.FireBall;
+import javaRPG.magic.Heal;
+import javaRPG.magic.Magic;
 import java.util.List;
 
 /**
@@ -19,6 +22,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
     private Sword sword;  // 装備している剣
     private Staff staff;  // 装備している杖
 
+    // 使用可能な魔法リスト
+    private Magic fireBall;    // ファイアボール魔法
+    private Magic heal;        // ヒール魔法
+
     // コンストラクタ（全パラメータ指定）
     public MagicSwordsman(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
@@ -26,6 +33,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
         super(name, id, "MagicSwordsman", 20, 100, 15);
         this.sword = null;  // 初期状態では剣未装備
         this.staff = null;  // 初期状態では杖未装備
+
+        // 魔法を初期化（魔法剣士はファイアとヒールのみ）
+        this.fireBall = new FireBall(25);
+        this.heal = new Heal(35);
     }
 
     // デフォルトコンストラクタ
@@ -34,6 +45,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
         super("魔法剣士", 3, "MagicSwordsman", 20, 100, 15);
         this.sword = null;
         this.staff = null;
+
+        // 魔法を初期化（魔法剣士はファイアとヒールのみ）
+        this.fireBall = new FireBall(25);
+        this.heal = new Heal(35);
     }
 
     // IEquipSwordインターフェースの実装
@@ -103,29 +118,27 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
         }
 
         // 魔法力の計算（基本攻撃力 + 杖のボーナス）
+        // ※この計算は将来的にMagicクラス内で行うこともできます
         int magicPower = getPower();
         if (staff != null) {
             magicPower += staff.getMagicBonus();
         }
 
-        System.out.println("★ " + getName() + "は" + magicName + "を唱えた！ ★");
-
         // 魔法の種類に応じた処理
+        // Magicクラスのインスタンスを使用して魔法を発動
         switch (magicName.toLowerCase()) {
             case "ファイア":
             case "fire":
-                // 単体攻撃魔法
-                if (targets.size() > 0) {
-                    BattleUnit target = targets.get(0);
-                    int damage = (int)(magicPower * 1.3);
-                    System.out.println("灼熱の炎が" + target.getName() + "を包む！");
-                    target.takeDamage(damage);
-                }
+            case "ファイアボール":
+            case "fireball":
+                // ファイアボール魔法を使用
+                fireBall.cast(this, targets);
                 break;
 
             case "サンダー":
             case "thunder":
-                // 単体攻撃魔法（雷系）
+                // サンダー魔法（従来の実装を維持）
+                System.out.println(getName() + "はサンダーを唱えた！");
                 if (targets.size() > 0) {
                     BattleUnit target = targets.get(0);
                     int damage = (int)(magicPower * 1.3);
@@ -136,13 +149,9 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
 
             case "ケアル":
             case "heal":
-                // 単体回復魔法
-                if (targets.size() > 0) {
-                    BattleUnit target = targets.get(0);
-                    int healAmount = magicPower;
-                    System.out.println("癒しの光が" + target.getName() + "を包む！");
-                    target.heal(healAmount);
-                }
+            case "ヒール":
+                // ヒール魔法を使用
+                heal.cast(this, targets);
                 break;
 
             default:

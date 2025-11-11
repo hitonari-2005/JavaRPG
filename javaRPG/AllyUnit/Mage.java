@@ -4,7 +4,12 @@ import javaRPG.BattleUnit.BattleUnit;
 import javaRPG.Interface.IEquipStaff;
 import javaRPG.Interface.IMagicUser;
 import javaRPG.item.Staff;
+import javaRPG.magic.FireBall;
+import javaRPG.magic.IceBall;
+import javaRPG.magic.Heal;
+import javaRPG.magic.Magic;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 魔法使いクラス
@@ -16,12 +21,22 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
     // フィールド（属性）- Mage固有
     private Staff staff;  // 装備している杖
 
+    // 使用可能な魔法リスト
+    private Magic fireBall;    // ファイアボール魔法
+    private Magic iceBall;     // アイスボール魔法
+    private Magic heal;        // ヒール魔法
+
     // コンストラクタ（全パラメータ指定）
     public Mage(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
         // Mageの初期ステータス: 攻撃力15, HP80, 素早さ12
         super(name, id, "Mage", 15, 80, 12);
         this.staff = null;  // 初期状態では杖未装備
+
+        // 魔法を初期化
+        this.fireBall = new FireBall(30);
+        this.iceBall = new IceBall(35);
+        this.heal = new Heal(40);
     }
 
     // デフォルトコンストラクタ
@@ -29,6 +44,11 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
         // デフォルトの魔法使いを作成
         super("魔法使い", 2, "Mage", 15, 80, 12);
         this.staff = null;
+
+        // 魔法を初期化
+        this.fireBall = new FireBall(30);
+        this.iceBall = new IceBall(35);
+        this.heal = new Heal(40);
     }
 
     // IEquipStaffインターフェースの実装
@@ -68,51 +88,42 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
         }
 
         // 魔法力の計算（基本攻撃力 + 杖のボーナス）
+        // ※この計算は将来的にMagicクラス内で行うこともできます
         int magicPower = getPower();
         if (staff != null) {
             magicPower += staff.getMagicBonus();
         }
 
-        System.out.println("★ " + getName() + "は" + magicName + "を唱えた！ ★");
-
         // 魔法の種類に応じた処理
+        // Magicクラスのインスタンスを使用して魔法を発動
         switch (magicName.toLowerCase()) {
             case "ファイア":
             case "fire":
-                // 単体攻撃魔法
-                if (targets.size() > 0) {
-                    BattleUnit target = targets.get(0);
-                    int damage = (int)(magicPower * 1.5);
-                    System.out.println("灼熱の炎が" + target.getName() + "を包む！");
-                    target.takeDamage(damage);
-                }
+            case "ファイアボール":
+            case "fireball":
+                // ファイアボール魔法を使用
+                fireBall.cast(this, targets);
                 break;
 
             case "ブリザド":
             case "blizzard":
-                // 単体攻撃魔法（氷系）
-                if (targets.size() > 0) {
-                    BattleUnit target = targets.get(0);
-                    int damage = (int)(magicPower * 1.5);
-                    System.out.println("氷の刃が" + target.getName() + "を切り裂く！");
-                    target.takeDamage(damage);
-                }
+            case "アイスボール":
+            case "iceball":
+                // アイスボール魔法を使用
+                iceBall.cast(this, targets);
                 break;
 
             case "ケアル":
             case "heal":
-                // 単体回復魔法
-                if (targets.size() > 0) {
-                    BattleUnit target = targets.get(0);
-                    int healAmount = (int)(magicPower * 1.2);
-                    System.out.println("癒しの光が" + target.getName() + "を包む！");
-                    target.heal(healAmount);
-                }
+            case "ヒール":
+                // ヒール魔法を使用
+                heal.cast(this, targets);
                 break;
 
             case "サンダガ":
             case "thundaga":
-                // 全体攻撃魔法
+                // 全体攻撃魔法（サンダガは特殊なので従来の実装を維持）
+                System.out.println(getName() + "はサンダガを唱えた！");
                 System.out.println("雷鳴が轟き、稲妻が敵を貫く！");
                 for (BattleUnit target : targets) {
                     if (target != null && target.isAlive()) {
