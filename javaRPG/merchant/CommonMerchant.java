@@ -4,6 +4,7 @@ package javaRPG.merchant;
 import javaRPG.AllyUnit.AllyUnit;       // 味方ユニットの基底クラス
 import javaRPG.item.Sword;              // 剣アイテムクラス
 import javaRPG.item.Staff;              // 杖アイテムクラス
+import javaRPG.item.Potion;             // 回復薬アイテムクラス
 import javaRPG.Interface.Sellable;      // 売買可能インターフェース
 import javaRPG.Interface.IEquipSword;   // 剣装備インターフェース
 import javaRPG.Interface.IEquipStaff;   // 杖装備インターフェース
@@ -74,12 +75,13 @@ public class CommonMerchant {
     /**
      * 在庫を初期化するメソッド
      *
-     * 商人が販売するすべての商品（剣3種類、杖3種類）を在庫リストに追加します。
+     * 商人が販売するすべての商品（剣3種類、杖3種類、回復薬3種類）を在庫リストに追加します。
      * このメソッドはコンストラクタから自動的に呼び出されます。
      *
      * 追加される商品：
      * - 剣: ブロンズソード、アイアンソード、ミスリルソード
      * - 杖: 木の杖、魔導杖、賢者の杖
+     * - 回復薬: 薬草、回復薬、ハイポーション
      */
     private void initializeInventory() {
         // 剣を追加
@@ -91,6 +93,11 @@ public class CommonMerchant {
         inventory.add(new Staff("木の杖", "初心者用の杖", 8, 150));
         inventory.add(new Staff("魔導杖", "魔力を増幅する杖", 15, 400));
         inventory.add(new Staff("賢者の杖", "賢者が使う強力な杖", 25, 1000));
+
+        // 回復薬を追加
+        inventory.add(new Potion("薬草", "HPを30回復する", 30, 50));
+        inventory.add(new Potion("回復薬", "HPを50回復する", 50, 100));
+        inventory.add(new Potion("ハイポーション", "HPを100回復する", 100, 200));
     }
 
     // ========================================
@@ -194,14 +201,18 @@ public class CommonMerchant {
             System.out.println(selectedItem.getName() + " を購入しました！");
 
             // ========================================
-            // 自動装備処理
+            // アイテムの種類に応じた処理
             // ========================================
-            // 購入したアイテムを自動的に装備する
-            if (selectedItem instanceof Sword && ally instanceof IEquipSword) {
-                // 剣の場合
+            if (selectedItem instanceof Potion) {
+                // 回復薬の場合：即座にHPを回復
+                Potion potion = (Potion) selectedItem;
+                ally.heal(potion.getHealAmount());
+                System.out.println(ally.getName() + "のHPが回復した！");
+            } else if (selectedItem instanceof Sword && ally instanceof IEquipSword) {
+                // 剣の場合：自動装備
                 ((IEquipSword) ally).equipSword((Sword) selectedItem);
             } else if (selectedItem instanceof Staff && ally instanceof IEquipStaff) {
-                // 杖の場合
+                // 杖の場合：自動装備
                 ((IEquipStaff) ally).equipStaff((Staff) selectedItem);
             }
 

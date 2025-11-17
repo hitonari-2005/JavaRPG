@@ -14,7 +14,8 @@
       "Bash(powershell:*)",
       "Bash(cmd /c dir:*)",
       "Bash(\"\\192.168.100.5\\studentsprofiles$\\JR2418\\Desktop\\oracleJdk-25\\bin\\java.exe\" -version)",
-      "Bash(\"\\192.168.100.5\\studentsprofiles$\\JR2418\\Desktop\\oracleJdk-25\\bin\\java.exe\" Main)"
+      "Bash(\"\\192.168.100.5\\studentsprofiles$\\JR2418\\Desktop\\oracleJdk-25\\bin\\java.exe\" Main)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []
