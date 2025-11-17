@@ -1,34 +1,95 @@
 package javaRPG.Interface;
 
 /**
- * Battlable interface
- * Sentou kanouna entity ga jissou suru interface
- * BattleUnit ya sono ko class ga jissou suru
+ * Battlable（戦闘可能）インターフェース
+ *
+ * このインターフェースは、戦闘に参加できるすべてのユニット（味方・敵）が
+ * 実装すべき基本的な戦闘機能を定義します。
+ *
+ * 実装クラス：
+ * - BattleUnit（基底クラス）
+ *   - AllyUnit（味方ユニット）
+ *     - Hero（勇者）
+ *     - Mage（魔法使い）
+ *     - MagicSwordsman（魔法剣士）
+ *   - EnemyUnit（敵ユニット）
+ *     - Slime（スライム）
+ *     - Goblin（ゴブリン）
+ *     - Dragon（ドラゴン）
+ *
+ * 定義する機能：
+ * 1. attack - 対象を攻撃する
+ * 2. takeDamage - ダメージを受ける
+ * 3. heal - HPを回復する
+ * 4. isAlive - 生存しているか確認する
+ *
+ * このインターフェースを実装することで、すべての戦闘ユニットが
+ * 統一された方法で戦闘処理を行うことができます。
+ *
+ * @author RPG開発チーム
+ * @version 1.0
  */
 public interface Battlable {
 
     /**
-     * Kougeki method - Taishou wo kougeki suru
-     * @param target Kougeki taishou
+     * 攻撃メソッド - 対象を攻撃する
+     *
+     * 指定された対象に攻撃を行います。ダメージ計算や攻撃演出などは
+     * 各実装クラスで具体的に定義されます。
+     *
+     * 実装例：
+     * - Hero: 剣攻撃や必殺技
+     * - Mage: 魔法攻撃
+     * - Slime: 体当たり攻撃
+     * - Dragon: ひっかく攻撃やファイアーブレス
+     *
+     * @param target 攻撃対象（通常はBattleUnitオブジェクト）
      */
     void attack(Object target);
 
     /**
-     * Damage wo ukeru method
-     * @param damage Ukeru damage ryou
+     * ダメージを受けるメソッド
+     *
+     * 攻撃を受けた際に呼び出され、指定された量のダメージを受けます。
+     * HPが減少し、0以下になると戦闘不能になります。
+     *
+     * 実装内容：
+     * - HPからダメージ量を減算
+     * - ダメージ量とダメージ後のHPを表示
+     * - HPが0以下になったら戦闘不能状態にする
+     * - 一部の敵（スライム、ゴブリン、ドラゴン）は特殊能力を発動
+     *
+     * @param damage 受けるダメージ量（0以上の整数）
      */
     void takeDamage(int damage);
 
     /**
-     * HP wo kaifuku suru method
-     * @param amount Kaifuku ryou
+     * HP回復メソッド
+     *
+     * 指定された量だけHPを回復します。最大HPを超えて回復することはできません。
+     *
+     * 使用例：
+     * - 回復魔法「ケアル」で味方のHPを回復
+     * - スライムの自動回復能力
+     * - レベルアップ時のHP全回復
+     *
+     * @param amount 回復量（0以上の整数）
      */
     void heal(int amount);
 
     /**
-     * Seizon kakunin method
-     * @return Ikiteiru baai true, taorete iru baai false
+     * 生存確認メソッド
+     *
+     * このユニットが生存しているかどうかを確認します。
+     * HPが1以上であれば生存、0以下であれば戦闘不能と判定されます。
+     *
+     * 使用例：
+     * - 攻撃対象が有効かチェック
+     * - 戦闘終了条件の判定（全滅チェック）
+     * - ターン処理で生存しているユニットのみ行動させる
+     *
+     * @return 生存している場合true、戦闘不能の場合false
      */
     boolean isAlive();
 
-}
+} // Battlable インターフェース終了

@@ -1,52 +1,128 @@
 package javaRPG.AllyUnit;
 
-import javaRPG.BattleUnit.BattleUnit;
-import javaRPG.Interface.IEquipSword;
-import javaRPG.Interface.IEquipStaff;
-import javaRPG.Interface.IMagicUser;
-import javaRPG.item.Sword;
-import javaRPG.item.Staff;
-import javaRPG.magic.FireBall;
-import javaRPG.magic.Heal;
-import javaRPG.magic.Magic;
-import java.util.List;
+// 必要なクラスをインポート
+import javaRPG.BattleUnit.BattleUnit;       // 戦闘ユニットの基底クラス
+import javaRPG.Interface.IEquipSword;       // 剣装備インターフェース
+import javaRPG.Interface.IEquipStaff;       // 杖装備インターフェース
+import javaRPG.Interface.IMagicUser;        // 魔法使用者インターフェース
+import javaRPG.item.Sword;                  // 剣アイテムクラス
+import javaRPG.item.Staff;                  // 杖アイテムクラス
+import javaRPG.magic.FireBall;              // ファイアボール魔法
+import javaRPG.magic.Heal;                  // ヒール魔法
+import javaRPG.magic.Magic;                 // 魔法の基底クラス
+import java.util.List;                      // リストインターフェース
 
 /**
  * 魔法剣士クラス
- * AllyUnitを継承し、IEquipSword、IEquipStaff、IMagicUserを実装する
- * 剣と杖の両方を扱い、魔法も使える万能キャラクター
+ *
+ * このクラスはプレイヤーが選択できる職業の一つである「魔法剣士」を表します。
+ * AllyUnitを継承し、IEquipSword、IEquipStaff、IMagicUserの3つのインターフェースを
+ * すべて実装することで、剣と杖の両方を装備し、物理攻撃と魔法の両方を使える
+ * 最も万能なキャラクターです。
+ *
+ * 主な特徴：
+ * - バランスの取れたステータス（HP100、攻撃力20、素早さ15）
+ * - 剣と杖の両方を同時に装備可能
+ * - 物理攻撃（剣攻撃）と魔法攻撃の両方を使い分けられる
+ * - 必殺技「魔法剣」で剣と杖の力を合わせた超強力な攻撃が可能
+ * - 二刀流攻撃で剣と杖の連続攻撃ができる
+ *
+ * 初期ステータス：
+ * - 名前: 魔法剣士
+ * - 攻撃力: 20
+ * - HP: 100
+ * - 素早さ: 15
+ *
+ * 実装インターフェース：
+ * - IEquipSword：剣の装備と剣攻撃機能を提供
+ * - IEquipStaff：杖の装備と杖攻撃機能を提供
+ * - IMagicUser：魔法使用機能を提供
+ *
+ * 使用可能な魔法：
+ * - ファイア：単体に炎属性の魔法ダメージ
+ * - サンダー：単体に雷属性の魔法ダメージ（威力1.3倍）
+ * - ケアル：単体のHPを回復
+ *
+ * 特殊技：
+ * - 魔法剣：剣と杖の力を合わせた一撃（威力2.5倍）
+ * - 二刀流攻撃：剣と杖の連続攻撃
+ *
+ * 継承関係：
+ * BattleUnit → AllyUnit → MagicSwordsman（このクラス）
+ *
+ * @author RPG開発チーム
+ * @version 1.0
  */
 public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff, IMagicUser {
 
+    // ========================================
     // フィールド（属性）- MagicSwordsman固有
-    private Sword sword;  // 装備している剣
-    private Staff staff;  // 装備している杖
+    // ========================================
 
+    /** 装備している剣 - nullの場合は剣未装備 */
+    private Sword sword;
+
+    /** 装備している杖 - nullの場合は杖未装備 */
+    private Staff staff;
+
+    // ========================================
     // 使用可能な魔法リスト
-    private Magic fireBall;    // ファイアボール魔法
-    private Magic heal;        // ヒール魔法
+    // ========================================
 
-    // コンストラクタ（全パラメータ指定）
+    /** ファイアボール魔法 - 単体に炎属性のダメージを与える */
+    private Magic fireBall;
+
+    /** ヒール魔法 - 単体のHPを回復する */
+    private Magic heal;
+
+    // ========================================
+    // コンストラクタ
+    // ========================================
+
+    /**
+     * MagicSwordsmanクラスのコンストラクタ（全パラメータ指定）
+     *
+     * 指定されたパラメータで魔法剣士を作成します。
+     * ただし、typeは常に"MagicSwordsman"で固定され、
+     * ステータスも魔法剣士専用の値が使用されます。
+     *
+     * @param name キャラクター名（通常は「魔法剣士」）
+     * @param id キャラクターの識別番号
+     * @param type キャラクタータイプ（"MagicSwordsman"で上書きされる）
+     * @param power 攻撃力（20で上書きされる）
+     * @param hp HP（100で上書きされる）
+     * @param speed 素早さ（15で上書きされる）
+     */
     public MagicSwordsman(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
         // MagicSwordsmanの初期ステータス: 攻撃力20, HP100, 素早さ15
         super(name, id, "MagicSwordsman", 20, 100, 15);
-        this.sword = null;  // 初期状態では剣未装備
-        this.staff = null;  // 初期状態では杖未装備
 
-        // 魔法を初期化（魔法剣士はファイアとヒールのみ）
-        this.fireBall = new FireBall(25);
-        this.heal = new Heal(35);
+        // 初期状態では剣・杖ともに未装備
+        this.sword = null;  // 剣未装備
+        this.staff = null;  // 杖未装備
+
+        // 魔法オブジェクトを初期化
+        // 魔法剣士はファイアとヒールのみ使用可能（Mageより威力は低い）
+        this.fireBall = new FireBall(25);   // 炎魔法（基本威力25）
+        this.heal = new Heal(35);           // 回復魔法（基本回復量35）
     }
 
-    // デフォルトコンストラクタ
+    /**
+     * MagicSwordsmanクラスのデフォルトコンストラクタ
+     *
+     * パラメータなしで呼び出された場合、デフォルトの魔法剣士を作成します。
+     * 名前は「魔法剣士」、IDは3、ステータスは標準値で初期化されます。
+     */
     public MagicSwordsman() {
         // デフォルトの魔法剣士を作成
         super("魔法剣士", 3, "MagicSwordsman", 20, 100, 15);
+
+        // 初期状態では剣・杖ともに未装備
         this.sword = null;
         this.staff = null;
 
-        // 魔法を初期化（魔法剣士はファイアとヒールのみ）
+        // 魔法オブジェクトを初期化
         this.fireBall = new FireBall(25);
         this.heal = new Heal(35);
     }
