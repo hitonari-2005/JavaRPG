@@ -93,6 +93,10 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
         // Mageの初期ステータス: 攻撃力15, HP80, 素早さ12
         super(name, id, "Mage", 15, 80, 12);
 
+        // 魔法使い専用のMP設定
+        setMaxMp(50);  // 魔法使いの最大MPは50（最も高い）
+        setMp(50);     // MPを最大値で初期化
+
         // 初期状態では杖未装備
         this.staff = null;
 
@@ -112,6 +116,10 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
     public Mage() {
         // デフォルトの魔法使いを作成
         super("魔法使い", 2, "Mage", 15, 80, 12);
+
+        // 魔法使い専用のMP設定
+        setMaxMp(50);  // 魔法使いの最大MPは50（最も高い）
+        setMp(50);     // MPを最大値で初期化
 
         // 初期状態では杖未装備
         this.staff = null;
@@ -178,10 +186,10 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
 
     // IMagicUserインターフェースの実装
     @Override
-    public void useMagic(String magicName, List<BattleUnit> targets) {
+    public boolean useMagic(String magicName, List<BattleUnit> targets) {
         if (targets == null || targets.isEmpty()) {
             System.out.println("対象が指定されていません！");
-            return;
+            return false;
         }
 
         // 魔法力の計算（基本攻撃力 + 杖のボーナス）
@@ -198,6 +206,11 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
             case "fire":
             case "ファイアボール":
             case "fireball":
+                // MP消費チェック（5 MP必要）
+                if (!consumeMp(5)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("5MPを消費した！");
                 // ファイアボール魔法を使用
                 fireBall.cast(this, targets);
                 break;
@@ -206,6 +219,11 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
             case "blizzard":
             case "アイスボール":
             case "iceball":
+                // MP消費チェック（6 MP必要）
+                if (!consumeMp(6)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("6MPを消費した！");
                 // アイスボール魔法を使用
                 iceBall.cast(this, targets);
                 break;
@@ -213,12 +231,22 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
             case "ケアル":
             case "heal":
             case "ヒール":
+                // MP消費チェック（4 MP必要）
+                if (!consumeMp(4)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("4MPを消費した！");
                 // ヒール魔法を使用
                 heal.cast(this, targets);
                 break;
 
             case "サンダガ":
             case "thundaga":
+                // MP消費チェック（8 MP必要）
+                if (!consumeMp(8)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("8MPを消費した！");
                 // 全体攻撃魔法（サンダガは特殊なので従来の実装を維持）
                 System.out.println(getName() + "はサンダガを唱えた！");
                 System.out.println("雷鳴が轟き、稲妻が敵を貫く！");
@@ -232,18 +260,25 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
 
             default:
                 System.out.println("その魔法は使えません！");
-                break;
+                return false;
         }
+        return true;  // 成功
     }
 
     // Mage専用の特殊技
-    public void meteorStrike(List<BattleUnit> targets) {
+    public boolean meteorStrike(List<BattleUnit> targets) {
         if (targets == null || targets.isEmpty()) {
             System.out.println("対象が指定されていません！");
-            return;
+            return false;
+        }
+
+        // MP消費チェック（20 MP必要）
+        if (!consumeMp(20)) {
+            return false;  // MPが足りない場合は失敗を返す
         }
 
         System.out.println("★★★ " + getName() + "の最強魔法「メテオ」！ ★★★");
+        System.out.println("20MPを消費した！");
         System.out.println("天から巨大な隕石が降り注ぐ！");
 
         int magicPower = getPower();
@@ -258,6 +293,7 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
                 target.takeDamage(damage);
             }
         }
+        return true;  // 成功
     }
 
     // 装備中の杖を取得

@@ -171,6 +171,7 @@ public class BattleSystem {
     private void allyAction(AllyUnit ally, Scanner scanner) {
         System.out.println("\n--- " + ally.getName() + "のターン ---");
         System.out.println("HP: " + ally.getHp() + "/" + ally.getMaxHp());
+        System.out.println("MP: " + ally.getMp() + "/" + ally.getMaxMp());
 
         // キャラクタークラスに応じた行動メニューを表示
         if (ally instanceof Hero) {
@@ -189,50 +190,61 @@ public class BattleSystem {
      * 勇者（Hero）の行動選択
      */
     private void heroAction(Hero hero, Scanner scanner) {
-        System.out.println("\n行動を選択:");
-        System.out.println("1. 通常攻撃");
-        System.out.println("2. 剣攻撃（装備している剣で強力な攻撃）");
-        System.out.println("3. 勇者の剣（必殺技・大ダメージ）");
-        System.out.println("4. 防御");
-        System.out.print("選択: ");
+        boolean actionSuccessful = false;
 
-        int action = scanner.nextInt();
-        scanner.nextLine();
+        while (!actionSuccessful) {
+            System.out.println("\n行動を選択:");
+            System.out.println("1. 通常攻撃");
+            System.out.println("2. 剣攻撃（装備している剣で強力な攻撃）");
+            System.out.println("3. 勇者の剣（必殺技・大ダメージ）");
+            System.out.println("4. 防御");
+            System.out.print("選択: ");
 
-        switch (action) {
-            case 1:
-                // 通常攻撃
-                EnemyUnit target1 = selectEnemyTarget(scanner);
-                if (target1 != null) {
-                    hero.attack(target1);
-                }
-                break;
+            int action = scanner.nextInt();
+            scanner.nextLine();
 
-            case 2:
-                // 剣攻撃
-                EnemyUnit target2 = selectEnemyTarget(scanner);
-                if (target2 != null) {
-                    hero.swordAttack(target2);
-                }
-                break;
+            switch (action) {
+                case 1:
+                    // 通常攻撃
+                    EnemyUnit target1 = selectEnemyTarget(scanner);
+                    if (target1 != null) {
+                        hero.attack(target1);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 3:
-                // 必殺技
-                EnemyUnit target3 = selectEnemyTarget(scanner);
-                if (target3 != null) {
-                    hero.braveSlash(target3);
-                }
-                break;
+                case 2:
+                    // 剣攻撃
+                    EnemyUnit target2 = selectEnemyTarget(scanner);
+                    if (target2 != null) {
+                        hero.swordAttack(target2);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 4:
-                // 防御
-                hero.defend();
-                break;
+                case 3:
+                    // 必殺技
+                    EnemyUnit target3 = selectEnemyTarget(scanner);
+                    if (target3 != null) {
+                        // MP不足の場合はfalseが返るので、ループが継続される
+                        if (hero.braveSlash(target3)) {
+                            actionSuccessful = true;
+                        }
+                    }
+                    break;
 
-            default:
-                System.out.println("無効な選択です。");
-                hero.attack(selectEnemyTarget(scanner));
-                break;
+                case 4:
+                    // 防御
+                    hero.defend();
+                    actionSuccessful = true;
+                    break;
+
+                default:
+                    System.out.println("無効な選択です。");
+                    hero.attack(selectEnemyTarget(scanner));
+                    actionSuccessful = true;
+                    break;
+            }
         }
     }
 
@@ -240,54 +252,68 @@ public class BattleSystem {
      * 魔法使い（Mage）の行動選択
      */
     private void mageAction(Mage mage, Scanner scanner) {
-        System.out.println("\n行動を選択:");
-        System.out.println("1. 通常攻撃");
-        System.out.println("2. 杖攻撃（装備している杖で魔法攻撃）");
-        System.out.println("3. 魔法を使う");
-        System.out.println("4. メテオ（必殺技・全体攻撃）");
-        System.out.println("5. 防御");
-        System.out.print("選択: ");
+        boolean actionSuccessful = false;
 
-        int action = scanner.nextInt();
-        scanner.nextLine();
+        while (!actionSuccessful) {
+            System.out.println("\n行動を選択:");
+            System.out.println("1. 通常攻撃");
+            System.out.println("2. 杖攻撃（装備している杖で魔法攻撃）");
+            System.out.println("3. 魔法を使う");
+            System.out.println("4. メテオ（必殺技・全体攻撃）");
+            System.out.println("5. 防御");
+            System.out.print("選択: ");
 
-        switch (action) {
-            case 1:
-                // 通常攻撃
-                EnemyUnit target1 = selectEnemyTarget(scanner);
-                if (target1 != null) {
-                    mage.attack(target1);
-                }
-                break;
+            int action = scanner.nextInt();
+            scanner.nextLine();
 
-            case 2:
-                // 杖攻撃
-                EnemyUnit target2 = selectEnemyTarget(scanner);
-                if (target2 != null) {
-                    mage.staffAttack(target2);
-                }
-                break;
+            switch (action) {
+                case 1:
+                    // 通常攻撃
+                    EnemyUnit target1 = selectEnemyTarget(scanner);
+                    if (target1 != null) {
+                        mage.attack(target1);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 3:
-                // 魔法使用
-                useMagicMenu(mage, scanner);
-                break;
+                case 2:
+                    // 杖攻撃
+                    EnemyUnit target2 = selectEnemyTarget(scanner);
+                    if (target2 != null) {
+                        mage.staffAttack(target2);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 4:
-                // 必殺技メテオ（全体攻撃）
-                List<BattleUnit> allEnemies = new ArrayList<>(getAliveEnemies());
-                mage.meteorStrike(allEnemies);
-                break;
+                case 3:
+                    // 魔法使用
+                    // useMagicMenuがMP不足で失敗した場合、falseが返る
+                    if (useMagicMenu(mage, scanner)) {
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 5:
-                // 防御
-                mage.defend();
-                break;
+                case 4:
+                    // 必殺技メテオ（全体攻撃）
+                    List<BattleUnit> allEnemies = new ArrayList<>(getAliveEnemies());
+                    // MP不足の場合はfalseが返るので、ループが継続される
+                    if (mage.meteorStrike(allEnemies)) {
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            default:
-                System.out.println("無効な選択です。");
-                mage.attack(selectEnemyTarget(scanner));
-                break;
+                case 5:
+                    // 防御
+                    mage.defend();
+                    actionSuccessful = true;
+                    break;
+
+                default:
+                    System.out.println("無効な選択です。");
+                    mage.attack(selectEnemyTarget(scanner));
+                    actionSuccessful = true;
+                    break;
+            }
         }
     }
 
@@ -295,74 +321,92 @@ public class BattleSystem {
      * 魔法剣士（MagicSwordsman）の行動選択
      */
     private void magicSwordsmanAction(MagicSwordsman magicSwordsman, Scanner scanner) {
-        System.out.println("\n行動を選択:");
-        System.out.println("1. 通常攻撃");
-        System.out.println("2. 剣攻撃");
-        System.out.println("3. 杖攻撃");
-        System.out.println("4. 魔法を使う");
-        System.out.println("5. 魔法剣（必殺技・剣と杖の力を合わせた攻撃）");
-        System.out.println("6. 二刀流攻撃（剣と杖の連続攻撃）");
-        System.out.println("7. 防御");
-        System.out.print("選択: ");
+        boolean actionSuccessful = false;
 
-        int action = scanner.nextInt();
-        scanner.nextLine();
+        while (!actionSuccessful) {
+            System.out.println("\n行動を選択:");
+            System.out.println("1. 通常攻撃");
+            System.out.println("2. 剣攻撃");
+            System.out.println("3. 杖攻撃");
+            System.out.println("4. 魔法を使う");
+            System.out.println("5. 魔法剣（必殺技・剣と杖の力を合わせた攻撃）");
+            System.out.println("6. 二刀流攻撃（剣と杖の連続攻撃）");
+            System.out.println("7. 防御");
+            System.out.print("選択: ");
 
-        switch (action) {
-            case 1:
-                // 通常攻撃
-                EnemyUnit target1 = selectEnemyTarget(scanner);
-                if (target1 != null) {
-                    magicSwordsman.attack(target1);
-                }
-                break;
+            int action = scanner.nextInt();
+            scanner.nextLine();
 
-            case 2:
-                // 剣攻撃
-                EnemyUnit target2 = selectEnemyTarget(scanner);
-                if (target2 != null) {
-                    magicSwordsman.swordAttack(target2);
-                }
-                break;
+            switch (action) {
+                case 1:
+                    // 通常攻撃
+                    EnemyUnit target1 = selectEnemyTarget(scanner);
+                    if (target1 != null) {
+                        magicSwordsman.attack(target1);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 3:
-                // 杖攻撃
-                EnemyUnit target3 = selectEnemyTarget(scanner);
-                if (target3 != null) {
-                    magicSwordsman.staffAttack(target3);
-                }
-                break;
+                case 2:
+                    // 剣攻撃
+                    EnemyUnit target2 = selectEnemyTarget(scanner);
+                    if (target2 != null) {
+                        magicSwordsman.swordAttack(target2);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 4:
-                // 魔法使用
-                useMagicMenu(magicSwordsman, scanner);
-                break;
+                case 3:
+                    // 杖攻撃
+                    EnemyUnit target3 = selectEnemyTarget(scanner);
+                    if (target3 != null) {
+                        magicSwordsman.staffAttack(target3);
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 5:
-                // 魔法剣（必殺技）
-                EnemyUnit target5 = selectEnemyTarget(scanner);
-                if (target5 != null) {
-                    magicSwordsman.magicBlade(target5);
-                }
-                break;
+                case 4:
+                    // 魔法使用
+                    // useMagicMenuがMP不足で失敗した場合、falseが返る
+                    if (useMagicMenu(magicSwordsman, scanner)) {
+                        actionSuccessful = true;
+                    }
+                    break;
 
-            case 6:
-                // 二刀流攻撃
-                EnemyUnit target6 = selectEnemyTarget(scanner);
-                if (target6 != null) {
-                    magicSwordsman.dualWieldAttack(target6);
-                }
-                break;
+                case 5:
+                    // 魔法剣（必殺技）
+                    EnemyUnit target5 = selectEnemyTarget(scanner);
+                    if (target5 != null) {
+                        // MP不足の場合はfalseが返るので、ループが継続される
+                        if (magicSwordsman.magicBlade(target5)) {
+                            actionSuccessful = true;
+                        }
+                    }
+                    break;
 
-            case 7:
-                // 防御
-                magicSwordsman.defend();
-                break;
+                case 6:
+                    // 二刀流攻撃
+                    EnemyUnit target6 = selectEnemyTarget(scanner);
+                    if (target6 != null) {
+                        // MP不足の場合はfalseが返るので、ループが継続される
+                        if (magicSwordsman.dualWieldAttack(target6)) {
+                            actionSuccessful = true;
+                        }
+                    }
+                    break;
 
-            default:
-                System.out.println("無効な選択です。");
-                magicSwordsman.attack(selectEnemyTarget(scanner));
-                break;
+                case 7:
+                    // 防御
+                    magicSwordsman.defend();
+                    actionSuccessful = true;
+                    break;
+
+                default:
+                    System.out.println("無効な選択です。");
+                    magicSwordsman.attack(selectEnemyTarget(scanner));
+                    actionSuccessful = true;
+                    break;
+            }
         }
     }
 
@@ -393,7 +437,7 @@ public class BattleSystem {
     /**
      * 魔法使用メニュー（MageとMagicSwordsmanで共通）
      */
-    private void useMagicMenu(AllyUnit caster, Scanner scanner) {
+    private boolean useMagicMenu(AllyUnit caster, Scanner scanner) {
         System.out.println("\n使用する魔法を選択:");
         System.out.println("1. ファイア（単体攻撃）");
         System.out.println("2. ブリザド（単体攻撃・氷系）");
@@ -443,20 +487,27 @@ public class BattleSystem {
 
             case 0:
                 System.out.println("魔法の使用をキャンセルしました。");
-                basicAllyAction(caster, scanner);
-                return;
+                return false;  // キャンセルは失敗として扱い、再選択可能にする
 
             default:
                 System.out.println("無効な選択です。");
-                return;
+                return false;  // 無効な選択も失敗として扱い、再選択可能にする
         }
 
-        // 魔法を使用
-        if (caster instanceof Mage) {
-            ((Mage) caster).useMagic(magicName, targets);
-        } else if (caster instanceof MagicSwordsman) {
-            ((MagicSwordsman) caster).useMagic(magicName, targets);
+        // 対象が選択されていない場合は失敗
+        if (targets.isEmpty()) {
+            System.out.println("対象が選択されていません。");
+            return false;
         }
+
+        // 魔法を使用し、その結果を返す
+        if (caster instanceof Mage) {
+            return ((Mage) caster).useMagic(magicName, targets);
+        } else if (caster instanceof MagicSwordsman) {
+            return ((MagicSwordsman) caster).useMagic(magicName, targets);
+        }
+
+        return false;  // どのクラスにも該当しない場合は失敗
     }
 
     /**
@@ -477,7 +528,8 @@ public class BattleSystem {
         for (int i = 0; i < aliveAllies.size(); i++) {
             AllyUnit ally = aliveAllies.get(i);
             System.out.println((i + 1) + ". " + ally.getName() +
-                             " (HP: " + ally.getHp() + "/" + ally.getMaxHp() + ")");
+                             " (HP: " + ally.getHp() + "/" + ally.getMaxHp() +
+                             ", MP: " + ally.getMp() + "/" + ally.getMaxMp() + ")");
         }
 
         System.out.print("対象を選択: ");

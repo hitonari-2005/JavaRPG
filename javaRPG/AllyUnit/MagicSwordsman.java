@@ -98,6 +98,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
         // MagicSwordsmanの初期ステータス: 攻撃力20, HP100, 素早さ15
         super(name, id, "MagicSwordsman", 20, 100, 15);
 
+        // 魔法剣士専用のMP設定
+        setMaxMp(45);  // 魔法剣士の最大MPは45（勇者と魔法使いの中間）
+        setMp(45);     // MPを最大値で初期化
+
         // 初期状態では剣・杖ともに未装備
         this.sword = null;  // 剣未装備
         this.staff = null;  // 杖未装備
@@ -117,6 +121,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
     public MagicSwordsman() {
         // デフォルトの魔法剣士を作成
         super("魔法剣士", 3, "MagicSwordsman", 20, 100, 15);
+
+        // 魔法剣士専用のMP設定
+        setMaxMp(45);  // 魔法剣士の最大MPは45（勇者と魔法使いの中間）
+        setMp(45);     // MPを最大値で初期化
 
         // 初期状態では剣・杖ともに未装備
         this.sword = null;
@@ -187,10 +195,10 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
 
     // IMagicUserインターフェースの実装
     @Override
-    public void useMagic(String magicName, List<BattleUnit> targets) {
+    public boolean useMagic(String magicName, List<BattleUnit> targets) {
         if (targets == null || targets.isEmpty()) {
             System.out.println("対象が指定されていません！");
-            return;
+            return false;
         }
 
         // 魔法力の計算（基本攻撃力 + 杖のボーナス）
@@ -207,12 +215,22 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
             case "fire":
             case "ファイアボール":
             case "fireball":
+                // MP消費チェック（5 MP必要）
+                if (!consumeMp(5)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("5MPを消費した！");
                 // ファイアボール魔法を使用
                 fireBall.cast(this, targets);
                 break;
 
             case "サンダー":
             case "thunder":
+                // MP消費チェック（7 MP必要）
+                if (!consumeMp(7)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("7MPを消費した！");
                 // サンダー魔法（従来の実装を維持）
                 System.out.println(getName() + "はサンダーを唱えた！");
                 if (targets.size() > 0) {
@@ -226,24 +244,36 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
             case "ケアル":
             case "heal":
             case "ヒール":
+                // MP消費チェック（4 MP必要）
+                if (!consumeMp(4)) {
+                    return false;  // MPが足りない場合は失敗を返す
+                }
+                System.out.println("4MPを消費した！");
                 // ヒール魔法を使用
                 heal.cast(this, targets);
                 break;
 
             default:
                 System.out.println("その魔法は使えません！");
-                break;
+                return false;
         }
+        return true;  // 成功
     }
 
     // MagicSwordsman専用の特殊技
-    public void magicBlade(BattleUnit target) {
+    public boolean magicBlade(BattleUnit target) {
         if (target == null || !target.isAlive()) {
             System.out.println("攻撃対象が無効です！");
-            return;
+            return false;
+        }
+
+        // MP消費チェック（15 MP必要）
+        if (!consumeMp(15)) {
+            return false;  // MPが足りない場合は失敗を返す
         }
 
         System.out.println("★★★ " + getName() + "の奥義「魔法剣」！ ★★★");
+        System.out.println("15MPを消費した！");
         System.out.println("剣に魔力を込めた一撃！");
 
         // 剣の攻撃力 + 杖の魔法力を合わせた超威力攻撃
@@ -257,21 +287,28 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
 
         int damage = (int)(totalPower * 2.5);
         target.takeDamage(damage);
+        return true;  // 成功
     }
 
     // 二刀流攻撃（剣と杖を使った連続攻撃）
-    public void dualWieldAttack(BattleUnit target) {
+    public boolean dualWieldAttack(BattleUnit target) {
         if (target == null || !target.isAlive()) {
             System.out.println("攻撃対象が無効です！");
-            return;
+            return false;
         }
 
         if (sword == null || staff == null) {
             System.out.println("剣と杖の両方を装備していないと使えません！");
-            return;
+            return false;
+        }
+
+        // MP消費チェック（12 MP必要）
+        if (!consumeMp(12)) {
+            return false;  // MPが足りない場合は失敗を返す
         }
 
         System.out.println("★ " + getName() + "の連続攻撃！ ★");
+        System.out.println("12MPを消費した！");
 
         // 剣攻撃
         System.out.println("1撃目: 剣による斬撃！");
@@ -284,6 +321,7 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
             int staffDamage = getPower() + staff.getMagicBonus();
             target.takeDamage(staffDamage);
         }
+        return true;  // 成功
     }
 
     // 装備中の剣を取得

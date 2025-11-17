@@ -133,27 +133,32 @@ public class AllyUnit extends BattleUnit {
      * 経験値が一定量に達したときに自動的に呼び出されます。
      * レベルアップすると以下のステータスが上昇します：
      * - 最大HP: +10
+     * - 最大MP: +5
      * - 攻撃力: +5
      * - 素早さ: +2
      *
-     * レベルアップ時にはHPが全回復し、次のレベルアップまでの経験値がリセットされます。
+     * レベルアップ時にはHPとMPが全回復し、次のレベルアップまでの経験値がリセットされます。
      */
     private void levelUp() {
         System.out.println("★ " + getName() + "はレベルアップした！ ★");
 
         // ステータス上昇量を定義
         int hpUp = 10;      // 最大HPの上昇量
+        int mpUp = 5;       // 最大MPの上昇量
         int powerUp = 5;    // 攻撃力の上昇量
         int speedUp = 2;    // 素早さの上昇量
 
         // ステータスを上昇させる
         setMaxHp(getMaxHp() + hpUp);      // 最大HPを増加
         setHp(getMaxHp());                // HPを全回復
+        setMaxMp(getMaxMp() + mpUp);      // 最大MPを増加
+        setMp(getMaxMp());                // MPを全回復
         setPower(getPower() + powerUp);   // 攻撃力を増加
         setSpeed(getSpeed() + speedUp);   // 素早さを増加
 
         // 上昇したステータスを表示
         System.out.println("  最大HP +" + hpUp);
+        System.out.println("  最大MP +" + mpUp);
         System.out.println("  攻撃力 +" + powerUp);
         System.out.println("  素早さ +" + speedUp);
 

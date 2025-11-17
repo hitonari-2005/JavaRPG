@@ -64,6 +64,10 @@ public class Hero extends AllyUnit implements IEquipSword {
         // 勇者の初期ステータス: 攻撃力25, HP120, 素早さ18
         super(name, id, "Hero", 25, 120, 18);
 
+        // 勇者専用のMP設定
+        setMaxMp(40);  // 勇者の最大MPは40
+        setMp(40);     // MPを最大値で初期化
+
         // 初期状態では剣未装備
         this.sword = null;
     }
@@ -77,6 +81,11 @@ public class Hero extends AllyUnit implements IEquipSword {
     public Hero() {
         // デフォルトの勇者を作成
         super("勇者", 1, "Hero", 25, 120, 18);
+
+        // 勇者専用のMP設定
+        setMaxMp(40);  // 勇者の最大MPは40
+        setMp(40);     // MPを最大値で初期化
+
         this.sword = null;
     }
 
@@ -149,6 +158,8 @@ public class Hero extends AllyUnit implements IEquipSword {
      * 勇者の最強攻撃技です。通常の剣攻撃よりもさらに強力で、
      * （基本攻撃力 + 剣の攻撃力ボーナス）× 2倍のダメージを与えます。
      *
+     * MP消費：10
+     *
      * ダメージ計算：
      * 1. 基本攻撃力を取得
      * 2. 剣が装備されていれば剣の攻撃力ボーナスを加算
@@ -159,16 +170,23 @@ public class Hero extends AllyUnit implements IEquipSword {
      * - 強敵を早く倒したい時
      *
      * @param target 攻撃対象のBattleUnit
+     * @return 技の使用に成功した場合true、失敗した場合false
      */
-    public void braveSlash(BattleUnit target) {
+    public boolean braveSlash(BattleUnit target) {
         // 攻撃対象が有効かチェック
         if (target == null || !target.isAlive()) {
             System.out.println("攻撃対象が無効です！");
-            return;
+            return false;
+        }
+
+        // MP消費チェック（10 MP必要）
+        if (!consumeMp(10)) {
+            return false;  // MPが足りない場合は失敗を返す
         }
 
         // 必殺技のメッセージを表示
         System.out.println("★ " + getName() + "の必殺技「勇者の剣」！ ★");
+        System.out.println("10MPを消費した！");
 
         // ダメージを計算：基本攻撃力 + 剣のボーナスの2倍
         int damage = getPower();
@@ -179,6 +197,7 @@ public class Hero extends AllyUnit implements IEquipSword {
 
         // 対象にダメージを与える
         target.takeDamage(damage);
+        return true;  // 成功
     }
 
     // ========================================

@@ -58,7 +58,8 @@ public interface IMagicUser {
      *
      * @param magicName 使用する魔法の名前（日本語または英語）
      * @param targets 対象のリスト（単体の場合は1つ、全体の場合は複数）
+     * @return 魔法の使用に成功した場合true、失敗した場合（MP不足など）false
      */
-    void useMagic(String magicName, List<BattleUnit> targets);
+    boolean useMagic(String magicName, List<BattleUnit> targets);
 
 } // IMagicUser インターフェース終了

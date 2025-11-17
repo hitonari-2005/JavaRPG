@@ -60,6 +60,20 @@ public abstract class BattleUnit extends Character implements Battlable {
     private int speed;
 
     /**
+     * 現在のMP（マジックポイント）
+     * このユニットの残り魔法力
+     * 0になると魔法や必殺技が使用できなくなる
+     */
+    private int mp;
+
+    /**
+     * 最大MP
+     * このユニットが持つことのできる最大の魔法力
+     * レベルアップや装備で増加する
+     */
+    private int maxMp;
+
+    /**
      * 防御中フラグ
      * trueの場合、次に受けるダメージが半減される
      * ダメージを受けると自動的にfalseに戻る
@@ -92,6 +106,11 @@ public abstract class BattleUnit extends Character implements Battlable {
         this.hp = hp;
         this.maxHp = hp;  // 初期HPを最大HPとして設定
         this.speed = speed;
+
+        // MP初期化（基本値30、子クラスで上書き可能）
+        this.mp = 30;
+        this.maxMp = 30;
+
         this.isDefending = false;  // 初期状態では防御していない
     }
 
@@ -102,6 +121,7 @@ public abstract class BattleUnit extends Character implements Battlable {
      * デフォルト値で初期化されます：
      * - 攻撃力：10
      * - HP/最大HP：50
+     * - MP/最大MP：30
      * - 素早さ：5
      */
     public BattleUnit() {
@@ -112,6 +132,8 @@ public abstract class BattleUnit extends Character implements Battlable {
         this.power = 10;
         this.hp = 50;
         this.maxHp = 50;
+        this.mp = 30;
+        this.maxMp = 30;
         this.speed = 5;
         this.isDefending = false;
     }
@@ -271,19 +293,65 @@ public abstract class BattleUnit extends Character implements Battlable {
     }
 
     // ========================================
+    // MP管理メソッド
+    // ========================================
+
+    /**
+     * MPを消費するメソッド
+     *
+     * 魔法や必殺技を使用する際にMPを消費します。
+     * MPが足りない場合は消費に失敗し、falseを返します。
+     *
+     * @param amount 消費するMP量
+     * @return MPが足りて消費できた場合true、MPが足りない場合false
+     */
+    public boolean consumeMp(int amount) {
+        // MPが足りるかチェック
+        if (this.mp >= amount) {
+            this.mp -= amount;  // MPを減算
+            return true;        // 消費成功
+        } else {
+            System.out.println(getName() + "のMPが足りない！");
+            return false;       // 消費失敗
+        }
+    }
+
+    /**
+     * MPを回復するメソッド
+     *
+     * このユニットのMPを指定された量だけ回復します。
+     * 最大MPを超えて回復することはありません。
+     *
+     * @param amount 回復するMP量
+     */
+    public void restoreMp(int amount) {
+        this.mp += amount;
+
+        // 最大MPを超えないようにする
+        if (this.mp > this.maxMp) {
+            this.mp = this.maxMp;
+        }
+
+        // 回復メッセージを表示
+        System.out.println(getName() + "のMPが" + amount + "回復した！");
+        System.out.println(getName() + "の現在MP: " + this.mp + "/" + this.maxMp);
+    }
+
+    // ========================================
     // 表示メソッド
     // ========================================
 
     /**
      * ステータスを画面に表示するメソッド
      *
-     * このユニットの現在の状態（名前、タイプ、HP、攻撃力、素早さ）を
+     * このユニットの現在の状態（名前、タイプ、HP、MP、攻撃力、素早さ）を
      * わかりやすく整形して表示します。
      *
      * 表示内容：
      * - 名前
      * - タイプ
      * - HP（現在値/最大値）
+     * - MP（現在値/最大値）
      * - 攻撃力
      * - 素早さ
      */
@@ -292,6 +360,7 @@ public abstract class BattleUnit extends Character implements Battlable {
         System.out.println("名前: " + getName());
         System.out.println("タイプ: " + getType());
         System.out.println("HP: " + hp + "/" + maxHp);
+        System.out.println("MP: " + mp + "/" + maxMp);
         System.out.println("攻撃力: " + power);
         System.out.println("素早さ: " + speed);
         System.out.println("====================");
@@ -392,6 +461,57 @@ public abstract class BattleUnit extends Character implements Battlable {
      */
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    /**
+     * 現在のMPを取得
+     *
+     * @return 現在のMP
+     */
+    public int getMp() {
+        return mp;
+    }
+
+    /**
+     * MPを設定
+     *
+     * MP回復や直接MP操作時に使用されます。
+     * 自動的に最大MPを超えないよう、また0未満にならないよう調整されます。
+     *
+     * @param mp 新しいMP値
+     */
+    public void setMp(int mp) {
+        this.mp = mp;
+
+        // 最大MPを超えないようにする
+        if (this.mp > this.maxMp) {
+            this.mp = this.maxMp;
+        }
+
+        // 0未満にならないようにする
+        if (this.mp < 0) {
+            this.mp = 0;
+        }
+    }
+
+    /**
+     * 最大MPを取得
+     *
+     * @return 最大MP
+     */
+    public int getMaxMp() {
+        return maxMp;
+    }
+
+    /**
+     * 最大MPを設定
+     *
+     * レベルアップ時などに使用されます。
+     *
+     * @param maxMp 新しい最大MP
+     */
+    public void setMaxMp(int maxMp) {
+        this.maxMp = maxMp;
     }
 
 }
