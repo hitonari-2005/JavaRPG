@@ -1,18 +1,19 @@
 @echo off
-pushd "\\192.168.100.5\studentsprofiles$\JR2418\Desktop\JavaRPG"
-echo Compiling Java files...
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/Character/Character.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/Interface/Battlable.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/BattleUnit/BattleUnit.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/AllyUnit/AllyUnit.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/Interface/IEquipSword.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/AllyUnit/Hero.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/EnemyUnit/EnemyUnit.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/item/Item.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/item/Sword.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/item/Staff.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/merchant/CommonMerchant.java
-"\\192.168.100.5\studentsprofiles$\JR2418\Desktop\oracleJdk-25\bin\javac.exe" javaRPG/Main.java
-echo Compilation complete!
-popd
+REM コンパイル用バッチファイル
+chcp 65001 > nul
+cd /d "%~dp0"
+
+echo ===== Javaファイルをコンパイル中... =====
+javac -encoding UTF-8 javaRPG/**/*.java javaRPG/*.java
+
+if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo ===== コンパイル成功！ =====
+    echo.
+    echo run_fixed.bat をダブルクリックして実行してください。
+) else (
+    echo.
+    echo ===== コンパイルエラーが発生しました =====
+)
+
 pause
