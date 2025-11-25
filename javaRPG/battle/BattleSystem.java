@@ -77,8 +77,14 @@ public class BattleSystem {
             System.out.println("       モンスターが現れた！");
             System.out.println("==========================================\n");
 
-            // 通常戦闘：1〜5体の敵が出現
-            int enemyCount = random.nextInt(5) + 1;
+            // 通常戦闘：敵が出現
+            // 一回目の戦闘は1〜3体、それ以降は1〜5体
+            int enemyCount;
+            if (battleCount == 1) {
+                enemyCount = random.nextInt(3) + 1;  // 1〜3体
+            } else {
+                enemyCount = random.nextInt(5) + 1;  // 1〜5体
+            }
             int enemyLevel = 1 + (battleCount / 2);
 
             for (int i = 0; i < enemyCount; i++) {
@@ -295,7 +301,8 @@ public class BattleSystem {
 
                 case 4:
                     // 必殺技メテオ（全体攻撃）
-                    List<BattleUnit> allEnemies = new ArrayList<>(getAliveEnemies());
+                    List<BattleUnit> allEnemies = new ArrayList<>();
+                    allEnemies.addAll(getAliveEnemies());
                     // MP不足の場合はfalseが返るので、ループが継続される
                     if (mage.meteorStrike(allEnemies)) {
                         actionSuccessful = true;
@@ -552,7 +559,8 @@ public class BattleSystem {
             Dragon dragon = (Dragon) enemy;
             // 30%の確率でファイアーブレス（全体攻撃）
             if (random.nextInt(100) < 30) {
-                List<BattleUnit> allyTargets = new ArrayList<>(allies);
+                List<BattleUnit> allyTargets = new ArrayList<>();
+                allyTargets.addAll(allies);
                 dragon.fireBreath(allyTargets);
                 return;
             }
