@@ -90,8 +90,8 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
      */
     public Mage(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
-        // Mageの初期ステータス: 攻撃力15, HP80, 素早さ12
-        super(name, id, "Mage", 15, 80, 12);
+        // Mageの初期ステータス: 攻撃力15, HP160, 素早さ12
+        super(name, id, "Mage", 15, 160, 12);
 
         // 魔法使い専用のMP設定
         setMaxMp(50);  // 魔法使いの最大MPは50（最も高い）
@@ -115,7 +115,7 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
      */
     public Mage() {
         // デフォルトの魔法使いを作成
-        super("魔法使い", 2, "Mage", 15, 80, 12);
+        super("魔法使い", 2, "Mage", 15, 160, 12);
 
         // 魔法使い専用のMP設定
         setMaxMp(50);  // 魔法使いの最大MPは50（最も高い）

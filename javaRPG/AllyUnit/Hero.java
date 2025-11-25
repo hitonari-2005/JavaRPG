@@ -61,8 +61,8 @@ public class Hero extends AllyUnit implements IEquipSword {
      */
     public Hero(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
-        // 勇者の初期ステータス: 攻撃力25, HP120, 素早さ18
-        super(name, id, "Hero", 25, 120, 18);
+        // 勇者の初期ステータス: 攻撃力25, HP240, 素早さ18
+        super(name, id, "Hero", 25, 240, 18);
 
         // 勇者専用のMP設定
         setMaxMp(40);  // 勇者の最大MPは40
@@ -80,7 +80,7 @@ public class Hero extends AllyUnit implements IEquipSword {
      */
     public Hero() {
         // デフォルトの勇者を作成
-        super("勇者", 1, "Hero", 25, 120, 18);
+        super("勇者", 1, "Hero", 25, 240, 18);
 
         // 勇者専用のMP設定
         setMaxMp(40);  // 勇者の最大MPは40

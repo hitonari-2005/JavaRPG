@@ -95,8 +95,8 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
      */
     public MagicSwordsman(String name, int id, String type, int power, int hp, int speed) {
         // 親クラス（AllyUnit）のコンストラクタを呼び出す
-        // MagicSwordsmanの初期ステータス: 攻撃力20, HP100, 素早さ15
-        super(name, id, "MagicSwordsman", 20, 100, 15);
+        // MagicSwordsmanの初期ステータス: 攻撃力20, HP200, 素早さ15
+        super(name, id, "MagicSwordsman", 20, 200, 15);
 
         // 魔法剣士専用のMP設定
         setMaxMp(45);  // 魔法剣士の最大MPは45（勇者と魔法使いの中間）
@@ -120,7 +120,7 @@ public class MagicSwordsman extends AllyUnit implements IEquipSword, IEquipStaff
      */
     public MagicSwordsman() {
         // デフォルトの魔法剣士を作成
-        super("魔法剣士", 3, "MagicSwordsman", 20, 100, 15);
+        super("魔法剣士", 3, "MagicSwordsman", 20, 200, 15);
 
         // 魔法剣士専用のMP設定
         setMaxMp(45);  // 魔法剣士の最大MPは45（勇者と魔法使いの中間）
