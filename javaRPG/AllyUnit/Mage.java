@@ -258,6 +258,23 @@ public class Mage extends AllyUnit implements IEquipStaff, IMagicUser {
                 }
                 break;
 
+            case "精神統一":
+                // MP消費なし（0 MP）
+                System.out.println(getName() + "は精神統一を行った！");
+                System.out.println("深く呼吸し、精神を集中する...");
+                // MPを15回復（最大MPを超えない）
+                int mpRecovery = 15;
+                int currentMp = getMp();
+                int maxMp = getMaxMp();
+                int actualRecovery = Math.min(mpRecovery, maxMp - currentMp);
+                if (actualRecovery > 0) {
+                    setMp(currentMp + actualRecovery);
+                    System.out.println(getName() + "のMPが" + actualRecovery + "回復した！");
+                } else {
+                    System.out.println("MPは既に最大です！");
+                }
+                break;
+
             default:
                 System.out.println("その魔法は使えません！");
                 return false;

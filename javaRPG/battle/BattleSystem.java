@@ -446,11 +446,12 @@ public class BattleSystem {
      */
     private boolean useMagicMenu(AllyUnit caster, Scanner scanner) {
         System.out.println("\n使用する魔法を選択:");
-        System.out.println("1. ファイア（単体攻撃）");
-        System.out.println("2. ブリザド（単体攻撃・氷系）");
-        System.out.println("3. サンダー（単体攻撃・雷系）");
-        System.out.println("4. ケアル（単体回復）");
-        System.out.println("5. サンダガ（全体攻撃）");
+        System.out.println("1. ファイア（単体攻撃）- 消費MP: 5");
+        System.out.println("2. ブリザド（単体攻撃・氷系）- 消費MP: 6");
+        System.out.println("3. サンダー（単体攻撃・雷系）- 消費MP: 5");
+        System.out.println("4. ケアル（単体回復）- 消費MP: 4");
+        System.out.println("5. サンダガ（全体攻撃）- 消費MP: 8");
+        System.out.println("6. 精神統一（MP回復）- 消費MP: 0");
         System.out.println("0. キャンセル");
         System.out.print("選択: ");
 
@@ -490,6 +491,12 @@ public class BattleSystem {
                 magicName = "サンダガ";
                 // 全体攻撃
                 targets.addAll(getAliveEnemies());
+                break;
+
+            case 6:
+                magicName = "精神統一";
+                // 自分自身を対象にする
+                targets.add(caster);
                 break;
 
             case 0:
