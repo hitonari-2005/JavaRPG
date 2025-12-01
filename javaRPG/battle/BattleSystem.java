@@ -148,7 +148,10 @@ public class BattleSystem {
         // 素早さ（speed）の降順でソート
         allUnits.sort(Comparator.comparingInt(BattleUnit::getSpeed).reversed());
 
-        System.out.println("\n========== ターン開始 ==========\n");
+        System.out.println("\n========== ターン開始 ==========");
+
+        // 戦闘ステータスを表示
+        displayBattleStatus();
 
         // 各ユニットの行動
         for (BattleUnit unit : allUnits) {
@@ -175,9 +178,9 @@ public class BattleSystem {
      * 味方の行動選択
      */
     private void allyAction(AllyUnit ally, Scanner scanner) {
-        System.out.println("\n--- " + ally.getName() + "のターン ---");
-        System.out.println("HP: " + ally.getHp() + "/" + ally.getMaxHp());
-        System.out.println("MP: " + ally.getMp() + "/" + ally.getMaxMp());
+        System.out.println("\n========================================");
+        System.out.println("  " + ally.getName() + "のターン");
+        System.out.println("========================================");
 
         // キャラクタークラスに応じた行動メニューを表示
         if (ally instanceof Hero) {
@@ -680,6 +683,43 @@ public class BattleSystem {
             }
         }
         return false;
+    }
+
+    /**
+     * 戦闘ステータスを表示（ドラゴンクエスト風）
+     * 味方と敵のステータスを見やすく表示する
+     */
+    private void displayBattleStatus() {
+        System.out.println("\n+====================================================================+");
+
+        // 敵のステータス表示（上部）
+        System.out.println("| 【敵】");
+        for (EnemyUnit enemy : enemies) {
+            if (enemy.isAlive()) {
+                System.out.printf("|   %-20s HP: %4d/%4d%n",
+                    enemy.getName(), enemy.getHp(), enemy.getMaxHp());
+            }
+        }
+
+        System.out.println("|");
+        System.out.println("+--------------------------------------------------------------------+");
+
+        // 味方のステータス表示（下部）
+        System.out.println("| 【味方】");
+        for (AllyUnit ally : allies) {
+            if (ally.isAlive()) {
+                System.out.printf("|   %-15s HP:%4d/%4d MP:%3d/%3d  G:%-6d XP:%-5d%n",
+                    ally.getName(),
+                    ally.getHp(), ally.getMaxHp(),
+                    ally.getMp(), ally.getMaxMp(),
+                    ally.getMoney(),
+                    ally.getCurrentXp());
+            } else {
+                System.out.printf("|   %-15s [戦闘不能]%n", ally.getName());
+            }
+        }
+
+        System.out.println("+====================================================================+");
     }
 
     /**
