@@ -247,8 +247,8 @@ public class BattleSystem {
 
                 default:
                     System.out.println("無効な選択です。");
-                    hero.attack(selectEnemyTarget(scanner));
-                    actionSuccessful = true;
+                    System.out.println("もう一度選択してください。");
+                    // actionSuccessful は false のまま、ループが継続される
                     break;
             }
         }
@@ -317,8 +317,8 @@ public class BattleSystem {
 
                 default:
                     System.out.println("無効な選択です。");
-                    mage.attack(selectEnemyTarget(scanner));
-                    actionSuccessful = true;
+                    System.out.println("もう一度選択してください。");
+                    // actionSuccessful は false のまま、ループが継続される
                     break;
             }
         }
@@ -410,8 +410,8 @@ public class BattleSystem {
 
                 default:
                     System.out.println("無効な選択です。");
-                    magicSwordsman.attack(selectEnemyTarget(scanner));
-                    actionSuccessful = true;
+                    System.out.println("もう一度選択してください。");
+                    // actionSuccessful は false のまま、ループが継続される
                     break;
             }
         }
@@ -421,23 +421,31 @@ public class BattleSystem {
      * 基本的な味方ユニットの行動
      */
     private void basicAllyAction(AllyUnit ally, Scanner scanner) {
-        System.out.println("\n行動を選択:");
-        System.out.println("1. 攻撃");
-        System.out.println("2. 防御");
-        System.out.print("選択: ");
+        boolean actionSuccessful = false;
 
-        int action = scanner.nextInt();
-        scanner.nextLine();
+        while (!actionSuccessful) {
+            System.out.println("\n行動を選択:");
+            System.out.println("1. 攻撃");
+            System.out.println("2. 防御");
+            System.out.print("選択: ");
 
-        if (action == 1) {
-            EnemyUnit target = selectEnemyTarget(scanner);
-            if (target != null) {
-                ally.attack(target);
+            int action = scanner.nextInt();
+            scanner.nextLine();
+
+            if (action == 1) {
+                EnemyUnit target = selectEnemyTarget(scanner);
+                if (target != null) {
+                    ally.attack(target);
+                    actionSuccessful = true;
+                }
+            } else if (action == 2) {
+                ally.defend();
+                actionSuccessful = true;
+            } else {
+                System.out.println("無効な選択です。");
+                System.out.println("もう一度選択してください。");
+                // actionSuccessful は false のまま、ループが継続される
             }
-        } else if (action == 2) {
-            ally.defend();
-        } else {
-            System.out.println("無効な選択です。");
         }
     }
 
@@ -538,23 +546,28 @@ public class BattleSystem {
             return aliveAllies.get(0);
         }
 
-        System.out.println("\n対象を選択:");
-        for (int i = 0; i < aliveAllies.size(); i++) {
-            AllyUnit ally = aliveAllies.get(i);
-            System.out.println((i + 1) + ". " + ally.getName() +
-                             " (HP: " + ally.getHp() + "/" + ally.getMaxHp() +
-                             ", MP: " + ally.getMp() + "/" + ally.getMaxMp() + ")");
+        // 有効な選択がされるまでループ
+        while (true) {
+            System.out.println("\n対象を選択:");
+            for (int i = 0; i < aliveAllies.size(); i++) {
+                AllyUnit ally = aliveAllies.get(i);
+                System.out.println((i + 1) + ". " + ally.getName() +
+                                 " (HP: " + ally.getHp() + "/" + ally.getMaxHp() +
+                                 ", MP: " + ally.getMp() + "/" + ally.getMaxMp() + ")");
+            }
+
+            System.out.print("対象を選択: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice >= 1 && choice <= aliveAllies.size()) {
+                return aliveAllies.get(choice - 1);
+            }
+
+            // 無効な選択の場合、警告を表示して再選択
+            System.out.println("警告: 選択した数字に該当する対象はいません！");
+            System.out.println("もう一度選択してください。");
         }
-
-        System.out.print("対象を選択: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        if (choice >= 1 && choice <= aliveAllies.size()) {
-            return aliveAllies.get(choice - 1);
-        }
-
-        return aliveAllies.get(0);  // デフォルトは最初の味方
     }
 
     /**
@@ -595,22 +608,27 @@ public class BattleSystem {
             return aliveEnemies.get(0);
         }
 
-        System.out.println("\n攻撃対象を選択:");
-        for (int i = 0; i < aliveEnemies.size(); i++) {
-            EnemyUnit enemy = aliveEnemies.get(i);
-            System.out.println((i + 1) + ". " + enemy.getName() +
-                             " (HP: " + enemy.getHp() + "/" + enemy.getMaxHp() + ")");
+        // 有効な選択がされるまでループ
+        while (true) {
+            System.out.println("\n攻撃対象を選択:");
+            for (int i = 0; i < aliveEnemies.size(); i++) {
+                EnemyUnit enemy = aliveEnemies.get(i);
+                System.out.println((i + 1) + ". " + enemy.getName() +
+                                 " (HP: " + enemy.getHp() + "/" + enemy.getMaxHp() + ")");
+            }
+
+            System.out.print("対象を選択: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice >= 1 && choice <= aliveEnemies.size()) {
+                return aliveEnemies.get(choice - 1);
+            }
+
+            // 無効な選択の場合、警告を表示して再選択
+            System.out.println("警告: 選択した数字に該当する敵はいません！");
+            System.out.println("もう一度選択してください。");
         }
-
-        System.out.print("対象を選択: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        if (choice >= 1 && choice <= aliveEnemies.size()) {
-            return aliveEnemies.get(choice - 1);
-        }
-
-        return aliveEnemies.get(0);  // デフォルトは最初の敵
     }
 
     /**
